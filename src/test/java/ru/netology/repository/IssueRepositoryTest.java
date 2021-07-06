@@ -51,14 +51,20 @@ class IssueRepositoryTest {
         repository.addNew(b3);
 //        имеет ли смысл этот тест, если перед каждым уже добавлялись три элемента?...
         assertEquals(Arrays.asList(b0, b1, b2, b3), repository.findAll());
+    }
 
+    @Test
+    void findOpened() {
         assertEquals(Arrays.asList(b0, b2), repository.findOpened());
+    }
 
+    @Test
+    void findClosed() {
         assertEquals(Collections.singletonList(b1), repository.findClosed());
     }
 
     @Test
-    void avtor() {
+    void filterByAuthor() {
         repository.addNew(b3);
         repository.addNew(b0);
 
@@ -66,7 +72,7 @@ class IssueRepositoryTest {
     }
 
     @Test
-    void label() {
+    void filterByLabel() {
         repository.addNew(b3);
         repository.addNew(b0);
 
@@ -74,7 +80,7 @@ class IssueRepositoryTest {
     }
 
     @Test
-    void assignee() {
+    void filterByAssignee() {
         repository.addNew(b3);
         repository.addNew(b0);
 
@@ -82,24 +88,45 @@ class IssueRepositoryTest {
     }
 
     @Test
-    void dateNew() {
+    void sortNewest() {
         repository.addNew(b3);
         repository.addNew(b0);
         repository.sortNewest();
-//        assertEquals(Arrays.asList(b2), repository.filterByAssignee("vasya"));
+        assertEquals(Arrays.asList(b3, b0, b0, b2, b1), repository.sortNewest());
         repository.sortOldest();
-//     TODO test old new
     }
 
     @Test
-    void closeThis() {
-        repository.closeIssue(2);
-        repository.closeIssue(2);
+    void sortOldest() {
+        repository.addNew(b3);
+        repository.addNew(b0);
+        repository.sortOldest();
+        assertEquals(Arrays.asList(b1, b2, b0, b0, b3), repository.sortOldest());
+    }
 
-//        assertEquals(Arrays.asList(b2), repository.filterByAssignee("vasya"));
-        repository.openIssue(0);
+    @Test
+    void canCloseThis() {
+        repository.closeIssue(2);
+        assertEquals(false, repository.getIssueStatus(2));
+    }
+
+    @Test
+    void cantCloseThis() {
+        repository.closeIssue(2);
+//        Ассерт на строчку делать?...аналогично в открытие открытого.
+        assertEquals(false, repository.getIssueStatus(2));
+    }
+
+    @Test
+    void canOpenThis() {
         repository.openIssue(2);
-//     TODO test old new
+        assertEquals(true, repository.getIssueStatus(2));
+    }
+
+    @Test
+    void cantOpenThis() {
+        repository.openIssue(2);
+        assertEquals(true, repository.getIssueStatus(2));
     }
 
 }

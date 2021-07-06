@@ -103,5 +103,14 @@ public class IssueRepository {
         }
     }
 
+    public boolean getIssueStatus(int id) {
+        for (Issue issue : issues) {
+            if (issue.getId() == id) {
+                return issue.isOpen();
+            }
+        }
+        return false;
+//явная лажа. перепишу... на что нибудь...
+    }
 
 }
