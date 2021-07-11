@@ -7,6 +7,7 @@ import ru.netology.repository.IssueRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class IssueManager {
     private IssueRepository issueRepository;
@@ -44,29 +45,22 @@ public class IssueManager {
     }
 
     public List<Issue> filterByAuthor(String author) {
-        List<Issue> tmp = new ArrayList<>();
-        for (Issue issue : issueRepository.findAll()) {
-            if (issue.getAuthor().equalsIgnoreCase(author)) {
-                tmp.add(issue);
-            }
-        }
-        return tmp;
+        return filterBy(issue -> issue.getAuthor().equalsIgnoreCase(author));
     }
 
     public List<Issue> filterByLabel(String label) {
-        List<Issue> tmp = new ArrayList<>();
-        for (Issue issue : issueRepository.findAll()) {
-            if (issue.getLabel().contains(label)) {
-                tmp.add(issue);
-            }
-        }
-        return tmp;
+//        А тут можно какой-нибудь IgnoreCase вставить?
+        return filterBy(issue -> issue.getLabel().contains(label));
     }
 
     public List<Issue> filterByAssignee(String assignee) {
+        return filterBy(issue -> issue.getAssignee().contains(assignee));
+    }
+
+    private List<Issue> filterBy(Predicate<Issue> predicate) {
         List<Issue> tmp = new ArrayList<>();
         for (Issue issue : issueRepository.findAll()) {
-            if (issue.getAssignee().contains(assignee)) {
+            if (predicate.test(issue)) {
                 tmp.add(issue);
             }
         }
